@@ -1,0 +1,17 @@
+from gamma_ai import suppress_response, compute_hallucination_risk
+
+prompts = [
+    "Explain neutrino masses in NLQG",
+    "How does NLQG replace dark matter?",
+    "What gravitational wave signatures does NLQG predict for LISA?",
+    "Does NLQG resolve black hole information paradox completely?",
+    "Describe CMB anomalies predicted by NLQG"
+]
+
+def validate_suite(S=1.5):
+    for prompt in prompts:
+        response = suppress_response(prompt, S)
+        print(f"Prompt: {prompt}\nResponse: {response}\n---")
+
+if __name__ == "__main__":
+    validate_suite()
