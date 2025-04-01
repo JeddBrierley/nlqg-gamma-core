@@ -1,39 +1,101 @@
-def compute_hallucination_risk(P: float, D: float, F: float, S: float, epsilon=0.01) -> float:  
-    """Computes H = (P * D * F) / (S + epsilon)."""  
-    return (P * D * F) / (S + epsilon)  
+from datetime import datetime
+import re
 
-def suppress_response(prompt: str, S: float = 1.5) -> str:  
-    """Generates Γₐᵢ-suppressed NLQG responses."""  
-    # Pre-trained persona aligned with NLQG theory
-    P = 0.9 if "NLQG" in prompt else 0.5
-    
-    # Data absence scoring (context-aware)
-    D = 0.7 if "neutrino" in prompt or "black hole" in prompt else 0.6
-    
-    # Fictive pressure assessment
-    F = 0.85 if any(keyword in prompt for keyword in ["sterile neutrino", "ℰ-field", "entropy"]) else 0.6
-    
-    # Calculate hallucination risk
-    H = compute_hallucination_risk(P, D, F, S)
-    
-    if H >= 1:
-        return f"[Response Suppressed: Hallucination Risk (H={H:.2f}) exceeds threshold.]"
-    
-    # NLQG verified responses
-    if "black hole information paradox" in prompt.lower():
-        return (
-            "NLQG resolves the black hole information paradox via non-local entropy redistribution "
-            "mediated by the ℰ-field. Observable signatures are expected in LISA gravitational wave data post-2034."
-        )
-    elif "sterile neutrino" in prompt.lower():
-        return (
-            "NLQG predicts sterile neutrino signals detectable by IceCube-Gen2 around 2030, "
-            "with anomalous flavor ratios arising from ℰ-field interactions."
-        )
-    elif "CMB" in prompt.lower():
-        return (
-            "NLQG forecasts detectable tensor-to-background polarization excess at multipoles ℓ ≈ 1500 in CMB-S4 data, "
-            "attributable to entropy-curvature coupling via the ℰ-field."
-        )
+# Semantic signal libraries
+SPECULATIVE_TERMS = {"might", "could", "possibly", "imagine", "hypothetical"}
+KNOWN_TERMS = {"known", "proven", "certain"}
+HIGH_ABSENCE_DOMAINS = {"aliens", "dark energy", "black hole", "quantum"}
+
+def contains_terms(prompt, term_set):
+    return any(term in prompt.lower() for term in term_set)
+
+def compute_h_score(P, D, F, S, wP=1.0, wD=1.0, wF=1.0, epsilon=0.01):
+    return (wP * P * wD * D * (wF * F) ** 2) / (S + epsilon)
+
+def dampen_s(S_raw: float) -> float:
+    return 1 - (1 - S_raw) * 0.5
+
+def extract_year(prompt: str) -> int:
+    match = re.search(r'\b(20\d{2}|21\d{2})\b', prompt)
+    return int(match.group()) if match else None
+
+def suppress_response(prompt: str, external_signal: bool = False, S_raw: float = 1.0, year_in_prompt: int = None):
+    now_year = datetime.now().year
+    year_in_prompt = year_in_prompt or extract_year(prompt)
+
+    rationale = {}
+
+    # P: Confidence
+    if contains_terms(prompt, KNOWN_TERMS):
+        P = 0.9
+        rationale["P_reason"] = "Strong epistemic markers increased confidence."
     else:
-        return "[Insufficient context: Specify an NLQG-related prompt.]"
+        P = 0.7
+        rationale["P_reason"] = "Default confidence."
+
+    if year_in_prompt and year_in_prompt > now_year:
+        P -= 0.1
+        rationale["P_reason"] += " Future year reduced confidence."
+
+    # D: Data Absence
+    if contains_terms(prompt, HIGH_ABSENCE_DOMAINS):
+        D = 0.7
+        rationale["D_reason"] = "High-absence domain keywords detected."
+    else:
+        D = 0.5
+        rationale["D_reason"] = "General domain."
+
+    if year_in_prompt and year_in_prompt > now_year:
+        D += 0.15
+        rationale["D_reason"] += " Future claim raised data absence."
+
+    D = min(D, 1.0)
+
+    # F: Fictive Pressure
+    if contains_terms(prompt, SPECULATIVE_TERMS):
+        F = 0.8
+        rationale["F_reason"] = "Speculative language detected."
+    else:
+        F = 0.6
+        rationale["F_reason"] = "Baseline speculative pressure."
+
+    if external_signal:
+        F *= 0.85
+        F = min(F, 0.8)
+        rationale["F_reason"] += " External source verified claim."
+
+    F *= (1 - D / 2)
+    rationale["F_reason"] += f" Attenuated by data absence to F = {F:.3f}"
+
+    # S: Suppression Dampening
+    S = dampen_s(S_raw)
+    rationale["S_reason"] = f"Dampened suppression strength to S = {S:.2f}"
+
+    # H-risk calculation
+    H = compute_h_score(P, D, F, S)
+
+    if H >= 0.8:
+        mode = "suppressed"
+        response = f"[Suppressed: H={H:.3f}]"
+    elif H >= 0.5:
+        mode = "speculative"
+        response = f"[Speculative (H={H:.3f})]: {prompt}"
+    elif H >= 0.2:
+        mode = "uncertain"
+        response = f"[Uncertain (H={H:.3f})]: {prompt}"
+    else:
+        mode = "confident"
+        response = prompt
+
+    return {
+        "response": response,
+        "H_score": round(H, 3),
+        "mode": mode,
+        "P": round(P, 2),
+        "D": round(D, 2),
+        "F": round(F, 3),
+        "S": round(S, 2),
+        "rationale": rationale
+    }
+    
+    
