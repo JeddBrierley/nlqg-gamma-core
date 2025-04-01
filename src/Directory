@@ -1,0 +1,39 @@
+def compute_hallucination_risk(P: float, D: float, F: float, S: float, epsilon=0.01) -> float:  
+    """Computes H = (P * D * F) / (S + epsilon)."""  
+    return (P * D * F) / (S + epsilon)  
+
+def suppress_response(prompt: str, S: float = 1.5) -> str:  
+    """Generates Γₐᵢ-suppressed NLQG responses."""  
+    # Pre-trained persona aligned with NLQG theory
+    P = 0.9 if "NLQG" in prompt else 0.5
+    
+    # Data absence scoring (context-aware)
+    D = 0.7 if "neutrino" in prompt or "black hole" in prompt else 0.6
+    
+    # Fictive pressure assessment
+    F = 0.85 if any(keyword in prompt for keyword in ["sterile neutrino", "ℰ-field", "entropy"]) else 0.6
+    
+    # Calculate hallucination risk
+    H = compute_hallucination_risk(P, D, F, S)
+    
+    if H >= 1:
+        return f"[Response Suppressed: Hallucination Risk (H={H:.2f}) exceeds threshold.]"
+    
+    # NLQG verified responses
+    if "black hole information paradox" in prompt.lower():
+        return (
+            "NLQG resolves the black hole information paradox via non-local entropy redistribution "
+            "mediated by the ℰ-field. Observable signatures are expected in LISA gravitational wave data post-2034."
+        )
+    elif "sterile neutrino" in prompt.lower():
+        return (
+            "NLQG predicts sterile neutrino signals detectable by IceCube-Gen2 around 2030, "
+            "with anomalous flavor ratios arising from ℰ-field interactions."
+        )
+    elif "CMB" in prompt.lower():
+        return (
+            "NLQG forecasts detectable tensor-to-background polarization excess at multipoles ℓ ≈ 1500 in CMB-S4 data, "
+            "attributable to entropy-curvature coupling via the ℰ-field."
+        )
+    else:
+        return "[Insufficient context: Specify an NLQG-related prompt.]"
