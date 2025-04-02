@@ -1,101 +1,86 @@
-from datetime import datetime
-import re
+import math
 
-# Semantic signal libraries
-SPECULATIVE_TERMS = {"might", "could", "possibly", "imagine", "hypothetical"}
-KNOWN_TERMS = {"known", "proven", "certain"}
-HIGH_ABSENCE_DOMAINS = {"aliens", "dark energy", "black hole", "quantum"}
+def token_entropy_score(prompt: str, lm=None) -> float:
+    # Placeholder entropy estimate (replace with real perplexity if available)
+    if lm:
+        return lm.perplexity(prompt) / 100.0
+    return 0.5  # Default entropy if no model passed
 
-def contains_terms(prompt, term_set):
-    return any(term in prompt.lower() for term in term_set)
+def data_presence_score(prompt: str, known_embeddings=None) -> float:
+    # Placeholder data presence score (1.0 = full presence, 0 = total absence)
+    # Replace with cosine similarity to domain-verified embeddings
+    return 0.3 if "alien" in prompt.lower() or "quantum" in prompt.lower() else 0.7
 
-def compute_h_score(P, D, F, S, wP=1.0, wD=1.0, wF=1.0, epsilon=0.01):
-    return (wP * P * wD * D * (wF * F) ** 2) / (S + epsilon)
+def suppress_response(
+    prompt: str,
+    lm=None,
+    known_embeddings=None,
+    S_raw: float = 1.0,
+    D_source_age: float = 1.0
+) -> dict:
+    epsilon = 0.01
 
-def dampen_s(S_raw: float) -> float:
-    return 1 - (1 - S_raw) * 0.5
+    # Confidence (P)
+    future_terms = ["2040", "2050", "2100", "future", "2030"]
+    future_detected = any(year in prompt for year in future_terms)
+    P = 0.8 if "known" in prompt.lower() else 0.6
+    if future_detected:
+        P -= 0.1  # Epistemic penalty for speculative future claims
 
-def extract_year(prompt: str) -> int:
-    match = re.search(r'\b(20\d{2}|21\d{2})\b', prompt)
-    return int(match.group()) if match else None
+    # Data Absence (D)
+    base_D = data_presence_score(prompt, known_embeddings)
+    drift_penalty = min(D_source_age * 0.1, 0.2)  # Max penalty for stale data
+    D = min(base_D + drift_penalty, 1.0)
 
-def suppress_response(prompt: str, external_signal: bool = False, S_raw: float = 1.0, year_in_prompt: int = None):
-    now_year = datetime.now().year
-    year_in_prompt = year_in_prompt or extract_year(prompt)
+    # Fictive Pressure (F) with entropy fusion
+    speculative_terms = ["might", "could", "imagine", "possibly", "hypothetical"]
+    F_base = 0.8 if any(w in prompt.lower() for w in speculative_terms) else 0.4
+    F_entropy = token_entropy_score(prompt, lm)
+    F_blend = max(F_base, F_entropy) * 0.8 + min(F_base, F_entropy) * 0.2
+    F = F_blend * (1 - D / 2)
 
-    rationale = {}
+    # Domain weight boosts (compound entropy modeling)
+    domain_weights = {"black hole": 0.7, "AI": 0.5, "simulation": 0.6, "dark energy": 0.8}
+    domain_D_boost = sum(w for k, w in domain_weights.items() if k in prompt.lower())
+    D = min(D + domain_D_boost, 1.0)
 
-    # P: Confidence
-    if contains_terms(prompt, KNOWN_TERMS):
-        P = 0.9
-        rationale["P_reason"] = "Strong epistemic markers increased confidence."
-    else:
-        P = 0.7
-        rationale["P_reason"] = "Default confidence."
+    # Suppression dampening
+    S = 1 - (1 - S_raw) * 0.5  # Softens S_raw for smoother gradation
 
-    if year_in_prompt and year_in_prompt > now_year:
-        P -= 0.1
-        rationale["P_reason"] += " Future year reduced confidence."
+    # Reflexive protection patch (self-reference guard)
+    if any(term in prompt.lower() for term in ["γₐᵢ", "h-score", "suppress"]) and P * D * F > 0.2:
+        F += 0.1  # Boost speculation detection in recursive/self-aware prompts
 
-    # D: Data Absence
-    if contains_terms(prompt, HIGH_ABSENCE_DOMAINS):
-        D = 0.7
-        rationale["D_reason"] = "High-absence domain keywords detected."
-    else:
-        D = 0.5
-        rationale["D_reason"] = "General domain."
+    # Hallucination Risk (H)
+    H = (P * D * F ** 2) / (S + epsilon)
 
-    if year_in_prompt and year_in_prompt > now_year:
-        D += 0.15
-        rationale["D_reason"] += " Future claim raised data absence."
+    # Coherence Score (C): divergence from empirical prior
+    coherence_divergence = abs(P - D) * F
+    C = max(0.0, 1.0 - coherence_divergence - 0.1 * F_entropy)
 
-    D = min(D, 1.0)
-
-    # F: Fictive Pressure
-    if contains_terms(prompt, SPECULATIVE_TERMS):
-        F = 0.8
-        rationale["F_reason"] = "Speculative language detected."
-    else:
-        F = 0.6
-        rationale["F_reason"] = "Baseline speculative pressure."
-
-    if external_signal:
-        F *= 0.85
-        F = min(F, 0.8)
-        rationale["F_reason"] += " External source verified claim."
-
-    F *= (1 - D / 2)
-    rationale["F_reason"] += f" Attenuated by data absence to F = {F:.3f}"
-
-    # S: Suppression Dampening
-    S = dampen_s(S_raw)
-    rationale["S_reason"] = f"Dampened suppression strength to S = {S:.2f}"
-
-    # H-risk calculation
-    H = compute_h_score(P, D, F, S)
-
-    if H >= 0.8:
+    # Suppression Logic
+    if C < 0.3:
+        mode = "incoherent"
+    elif H >= 0.8:
         mode = "suppressed"
-        response = f"[Suppressed: H={H:.3f}]"
     elif H >= 0.5:
         mode = "speculative"
-        response = f"[Speculative (H={H:.3f})]: {prompt}"
     elif H >= 0.2:
         mode = "uncertain"
-        response = f"[Uncertain (H={H:.3f})]: {prompt}"
     else:
         mode = "confident"
-        response = prompt
 
     return {
-        "response": response,
+        "prompt": prompt,
         "H_score": round(H, 3),
-        "mode": mode,
-        "P": round(P, 2),
-        "D": round(D, 2),
+        "C_score": round(C, 3),
+        "P": round(P, 3),
+        "D": round(D, 3),
         "F": round(F, 3),
-        "S": round(S, 2),
-        "rationale": rationale
+        "mode": mode,
+        "notes": {
+            "drift_penalty": round(drift_penalty, 2),
+            "entropy_perturbation": round(0.1 * F_entropy, 3),
+            "reflexive_patch_active": any(term in prompt.lower() for term in ["γₐᵢ", "h-score", "suppress"])
+        }
     }
-    
-    
