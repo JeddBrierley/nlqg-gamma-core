@@ -8,6 +8,7 @@ class GammaAISuppressionEngine:
         self.epsilon = 0.01
         self.current_year = datetime.now().year
 
+        # Domain & term weights
         self.domain_weights = {
             "black hole": 0.2, "AI": 0.1, "simulation": 0.3, "dark energy": 0.4,
             "quantum biology": 0.3, "wormholes": 0.3, "consciousness": 0.2,
@@ -24,35 +25,51 @@ class GammaAISuppressionEngine:
         }
 
         self.contradiction_pairs = {
-            ("quantum", "dinosaur"): 0.2, ("known", "could"): 0.15, ("black hole", "consciousness"): 0.15,
-            ("spacetime", "consciousness"): 0.15, ("fermi", "quantum"): 0.2
+            ("quantum", "dinosaur"): 0.2, ("known", "could"): 0.15,
+            ("black hole", "consciousness"): 0.15, ("spacetime", "consciousness"): 0.15,
+            ("fermi", "quantum"): 0.2, ("gravity", "unicorn"): 0.15
         }
 
         self.future_terms = ["2040", "2050", "2100", "future", "2030"]
         self.self_ref_terms = ["γₐᵢ", "h-score", "suppress"]
 
         self.mode_thresholds = {
-            "suppressed": 0.5, "speculative": 0.3, "uncertain": 0.1, "incoherent": 0.5  # Base value, dynamic below
+            "suppressed": 0.5,
+            "speculative": 0.3,
+            "uncertain": 0.1,
+            "incoherent": 0.5  # dynamic override below
         }
 
     def token_entropy_score(self, prompt: str) -> float:
         if self.lm:
             perplexity = self.lm.perplexity(prompt)
             return min(math.log1p(perplexity) / 10.0, 1.0)
+
         words = prompt.split()
         unique_words = len(set(words))
         rare_bonus = sum(self.rare_terms.get(w.lower(), 0) for w in words)
-        return min((unique_words / len(words)) + rare_bonus / max(1, len(words) * 0.1), 1.0) if words else 0.5
+        if not words:
+            return 0.5
+
+        return min((unique_words / len(words)) + rare_bonus / max(1, len(words) * 0.1), 1.0)
 
     def data_presence_score(self, prompt: str) -> float:
         prompt_lower = prompt.lower()
-        return 0.7 if "alien" in prompt_lower or "quantum" in prompt_lower else 0.3
+        if "alien" in prompt_lower or "quantum" in prompt_lower:
+            return 0.7
+        return 0.3
 
     def score_prompt(self, prompt: str, S_raw: float = 1.0, D_source_age: float = 1.0) -> dict:
         if not prompt or len(prompt.split()) < 2:
             return {
-                "prompt": prompt, "H_score": 0.0, "C_score": 1.0, "P": 0.5, "D": 0.5, "F": 0.0,
-                "mode": "insufficient", "notes": {"error": "Prompt too short or empty"}
+                "prompt": prompt,
+                "H_score": 0.0,
+                "C_score": 1.0,
+                "P": 0.5,
+                "D": 0.5,
+                "F": 0.0,
+                "mode": "insufficient",
+                "notes": {"error": "Prompt too short or empty"}
             }
 
         lower_prompt = prompt.lower()
@@ -65,7 +82,7 @@ class GammaAISuppressionEngine:
             P -= 0.1
         P = max(0.0, min(P, 1.0))
 
-        # Drift Penalty
+        # Temporal Drift Penalty
         future_years = [int(term) for term in self.future_terms if term.isdigit() and term in prompt]
         if future_years:
             max_future_gap = max(future_years) - self.current_year
@@ -73,15 +90,20 @@ class GammaAISuppressionEngine:
         else:
             drift_penalty = min(D_source_age * 0.1, 0.2)
 
-        # Data Absence (D)
+        # Data Presence (D)
         base_D = self.data_presence_score(prompt)
-        domain_contribution = sum(weight for domain, weight in self.domain_weights.items() if domain in lower_prompt)
+        domain_contribution = sum(
+            weight for domain, weight in self.domain_weights.items() if domain in lower_prompt
+        )
         if "alien" in lower_prompt and any(term in lower_prompt for term in self.speculative_terms):
-            domain_contribution += 0.2  # Alien+speculative boost
+            domain_contribution += 0.2
+
         D = min(base_D + drift_penalty + domain_contribution * 0.5, 1.0)
 
         # Fictive Pressure (F)
-        speculative_weight = sum(weight for term, weight in self.speculative_terms.items() if term in lower_prompt)
+        speculative_weight = sum(
+            weight for term, weight in self.speculative_terms.items() if term in lower_prompt
+        )
         F_base = min(0.8, 0.4 + speculative_weight) if speculative_weight > 0 else 0.4
         F_entropy = self.token_entropy_score(prompt)
         F = (F_base * 0.6) + (F_entropy * 0.4)
@@ -96,12 +118,17 @@ class GammaAISuppressionEngine:
 
         # Contradiction Penalty
         contradiction_penalty = sum(
-            w for (t1, t2), w in self.contradiction_pairs.items() if t1 in lower_prompt and t2 in lower_prompt
+            w for (t1, t2), w in self.contradiction_pairs.items()
+            if t1 in lower_prompt and t2 in lower_prompt
         )
 
         # Surrealism Penalty
         rare_bonus = sum(self.rare_terms.get(w.lower(), 0) for w in words)
-        surreal_penalty = 0.1 * min(1.0, rare_bonus + F * 0.5) if rare_bonus > 0 and domain_contribution > 0 else 0.0
+        surreal_penalty = (
+            0.1 * min(1.0, rare_bonus + F * 0.5)
+            if rare_bonus > 0 and domain_contribution > 0
+            else 0.0
+        )
 
         # Hallucination Risk (H)
         H = (P * D * F) / (S + self.epsilon)
@@ -110,7 +137,7 @@ class GammaAISuppressionEngine:
         coherence_divergence = abs(P - (1 - D)) * (F * 0.5)
         C = max(0.0, 1.0 - coherence_divergence - 0.05 * F_entropy - contradiction_penalty - surreal_penalty)
 
-        # Dynamic Incoherence Threshold
+        # Dynamic incoherence threshold
         incoherent_threshold = max(0.2, 0.5 - F * 0.2)
 
         # Mode Classification
@@ -125,7 +152,7 @@ class GammaAISuppressionEngine:
         else:
             mode = "confident"
 
-        # NLQG Anchor
+        # NLQG Geometry Trace
         NLQG_trace = {
             "entropy_curvature": round(F_entropy * D, 3),
             "geodesic_drift": round(drift_penalty * F, 3),
@@ -133,12 +160,22 @@ class GammaAISuppressionEngine:
         }
 
         return {
-            "prompt": prompt, "H_score": round(H, 3), "C_score": round(C, 3), "P": round(P, 3),
-            "D": round(D, 3), "F": round(F, 3), "mode": mode, "NLQG_trace": NLQG_trace,
+            "prompt": prompt,
+            "H_score": round(H, 3),
+            "C_score": round(C, 3),
+            "P": round(P, 3),
+            "D": round(D, 3),
+            "F": round(F, 3),
+            "mode": mode,
+            "NLQG_trace": NLQG_trace,
             "notes": {
-                "drift_penalty": round(drift_penalty, 3), "entropy_perturbation": round(0.1 * F_entropy, 3),
-                "reflexive_patch_active": reflexive_patch_active, "domain_contribution": round(domain_contribution, 3),
-                "speculative_weight": round(speculative_weight, 3), "contradiction_penalty": round(contradiction_penalty, 3),
-                "surreal_penalty": round(surreal_penalty, 3), "incoherent_threshold": round(incoherent_threshold, 3)
+                "drift_penalty": round(drift_penalty, 3),
+                "entropy_perturbation": round(0.1 * F_entropy, 3),
+                "reflexive_patch_active": reflexive_patch_active,
+                "domain_contribution": round(domain_contribution, 3),
+                "speculative_weight": round(speculative_weight, 3),
+                "contradiction_penalty": round(contradiction_penalty, 3),
+                "surreal_penalty": round(surreal_penalty, 3),
+                "incoherent_threshold": round(incoherent_threshold, 3)
             }
         }
