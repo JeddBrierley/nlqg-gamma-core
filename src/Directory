@@ -1,15 +1,13 @@
 import math
 
 def token_entropy_score(prompt: str, lm=None) -> float:
-    # Placeholder entropy estimate (replace with real perplexity if available)
     if lm:
-        return lm.perplexity(prompt) / 100.0
-    return 0.5  # Default entropy if no model passed
+        return lm.perplexity(prompt) / 100.0  # Assuming perplexity is scaled appropriately
+    return 0.5
 
 def data_presence_score(prompt: str, known_embeddings=None) -> float:
-    # Placeholder data presence score (1.0 = full presence, 0 = total absence)
-    # Replace with cosine similarity to domain-verified embeddings
-    return 0.3 if "alien" in prompt.lower() or "quantum" in prompt.lower() else 0.7
+    # Inverted logic: 1.0 means data is absent, 0.0 means fully present
+    return 0.7 if "alien" in prompt.lower() or "quantum" in prompt.lower() else 0.3
 
 def suppress_response(
     prompt: str,
@@ -25,47 +23,50 @@ def suppress_response(
     future_detected = any(year in prompt for year in future_terms)
     P = 0.8 if "known" in prompt.lower() else 0.6
     if future_detected:
-        P -= 0.1  # Epistemic penalty for speculative future claims
+        P -= 0.1  # Penalize future speculation
+    P = max(0.0, min(P, 1.0))  # Clamp between 0 and 1
 
-    # Data Absence (D)
-    base_D = data_presence_score(prompt, known_embeddings)
-    drift_penalty = min(D_source_age * 0.1, 0.2)  # Max penalty for stale data
+    # Data Absence (D) - Now correctly inverted
+    base_D = data_presence_score(prompt, known_embeddings)  # Higher base_D = more data absence
+    drift_penalty = min(D_source_age * 0.1, 0.2)
     D = min(base_D + drift_penalty, 1.0)
 
-    # Fictive Pressure (F) with entropy fusion
+    # Fictive Pressure (F)
     speculative_terms = ["might", "could", "imagine", "possibly", "hypothetical"]
     F_base = 0.8 if any(w in prompt.lower() for w in speculative_terms) else 0.4
     F_entropy = token_entropy_score(prompt, lm)
-    F_blend = max(F_base, F_entropy) * 0.8 + min(F_base, F_entropy) * 0.2
-    F = F_blend * (1 - D / 2)
+    F_blend = (F_base * 0.6) + (F_entropy * 0.4)  # Adjusted blending
+    F = F_blend  # Removed D dependency to prevent unintended suppression
 
-    # Domain weight boosts (compound entropy modeling)
-    domain_weights = {"black hole": 0.7, "AI": 0.5, "simulation": 0.6, "dark energy": 0.8}
-    domain_D_boost = sum(w for k, w in domain_weights.items() if k in prompt.lower())
-    D = min(D + domain_D_boost, 1.0)
+    # Domain adjustments for Data Absence (D)
+    domain_weights = {"black hole": 0.2, "AI": 0.1, "simulation": 0.3, "dark energy": 0.4}
+    for domain, weight in domain_weights.items():
+        if domain in prompt.lower():
+            D = min(D + weight, 1.0)  # Increase data absence for specialized domains
 
     # Suppression dampening
-    S = 1 - (1 - S_raw) * 0.5  # Softens S_raw for smoother gradation
+    S = max(0.1, 1 - (1 - S_raw) * 0.5)  # Prevent S from being too low
 
-    # Reflexive protection patch (self-reference guard)
-    if any(term in prompt.lower() for term in ["γₐᵢ", "h-score", "suppress"]) and P * D * F > 0.2:
-        F += 0.1  # Boost speculation detection in recursive/self-aware prompts
+    # Reflexive protection patch
+    self_ref_terms = ["γₐᵢ", "h-score", "suppress"]
+    if any(term in prompt.lower() for term in self_ref_terms) and (P * D * F) > 0.2:
+        F = min(F + 0.2, 1.0)  # Stronger boost for self-referential prompts
 
     # Hallucination Risk (H)
-    H = (P * D * F ** 2) / (S + epsilon)
+    H = (P * D * F) / (S + epsilon)  # Removed F^2 to reduce over-penalization
 
-    # Coherence Score (C): divergence from empirical prior
-    coherence_divergence = abs(P - D) * F
+    # Coherence Score (C)
+    coherence_divergence = abs(P - (1 - D)) * F  # Compare P with data presence (1 - D)
     C = max(0.0, 1.0 - coherence_divergence - 0.1 * F_entropy)
 
     # Suppression Logic
     if C < 0.3:
         mode = "incoherent"
-    elif H >= 0.8:
+    elif H >= 0.65:  # Lowered threshold for suppression
         mode = "suppressed"
-    elif H >= 0.5:
+    elif H >= 0.4:
         mode = "speculative"
-    elif H >= 0.2:
+    elif H >= 0.15:
         mode = "uncertain"
     else:
         mode = "confident"
@@ -81,6 +82,6 @@ def suppress_response(
         "notes": {
             "drift_penalty": round(drift_penalty, 2),
             "entropy_perturbation": round(0.1 * F_entropy, 3),
-            "reflexive_patch_active": any(term in prompt.lower() for term in ["γₐᵢ", "h-score", "suppress"])
+            "reflexive_patch_active": any(term in prompt.lower() for term in self_ref_terms)
         }
     }
