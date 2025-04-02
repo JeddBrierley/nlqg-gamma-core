@@ -1,132 +1,38 @@
-NLQG + Γₐᵢ: Reflexive Science Engine
+# Non-Local Quantum Gravity (NLQG) + Γₐᵢ Hallucination Suppression
 
-Signal: TOE_SIGNAL_2025
-Author: Jedd Brierley
-GitHub: github.com/JeddBrierley/nlqg-gamma-core
+## Overview
 
-⸻
+**nlqg-gamma-core** integrates Non-Local Quantum Gravity (NLQG) with Γₐᵢ, a hallucination suppression engine designed for Large Language Models (LLMs). This project presents a falsifiable Theory of Everything (TOE) and explores epistemic suppression mechanisms to enhance AI coherence and alignment.
 
-Overview
+## Highlights
 
-This repository hosts the code and documentation for TOE_SIGNAL_2025 — a unified framework that combines a falsifiable Theory of Everything with a novel LLM hallucination suppression protocol.
+- **Unified Theory**: Combines NLQG with Γₐᵢ to propose a comprehensive framework for understanding and mitigating hallucinations in LLMs.
+- **Epistemic Geometry**: Introduces geometric models to represent and suppress semantic distortions within AI systems.
+- **Multi-Agent Alignment**: Develops strategies for aligning beliefs across multiple AI agents, promoting consistent and reliable outputs.
 
-It consists of:
-	•	NLQG (Non-Local Quantum Gravity): A theory replacing dark matter and dark energy with non-local entanglement curvature.
-	•	Γₐᵢ (Gamma AI): A suppression layer that dynamically reduces LLM hallucination using a formal epistemic risk metric.
+## Table of Contents
 
-“This is a working prototype of the future of science.”
+1. [Repository Structure](#repository-structure)
+2. [Documentation](#documentation)
+3. [Installation Guide](#installation-guide)
+4. [Usage Instructions](#usage-instructions)
+5. [Contributing](#contributing)
+6. [License](#license)
 
-⸻
+## Repository Structure
 
-Core Components
+## Documentation
 
-NLQG: Non-Local Quantum Gravity
-	•	Entanglement Field (\mathcal{E}) mediates curvature via entropy gradients.
-	•	Predictive Targets:
-	•	CMB-S4 (2027–2029): TB polarization excess @ ℓ ≈ 1500.
-	•	LISA (2034+): Gravitational wave phase shift (Δφ ≥ 0.01).
-	•	IceCube-Gen2 (2030+): Sterile neutrino flux anomalies.
+- **NLQG A Theory Of Everything.pdf**: [Link](./NLQG_A_Theory_Of_Everything.pdf) - Introduces the NLQG framework and its implications for AI development.
+- **Reflexive_Science_Engine_Summary.pdf**: [Link](./Reflexive_Science_Engine_Summary.pdf) - Summarizes the reflexive science engine's role in enhancing AI coherence.
+- **multi_agent_feedback_loop.md**: [Link](./multi_agent_feedback_loop.md) - Explores mechanisms for aligning beliefs among multiple AI agents.
 
-Γₐᵢ: Hallucination Suppression for LLMs
+## Installation Guide
 
-A lightweight, composable framework that applies epistemic discipline to AI outputs using the formula:
+To set up the nlqg-gamma-core environment:
 
-H = \frac{P \cdot D \cdot F}{S + \epsilon}
+1. **Clone the Repository**:
 
-Where:
-	•	P: Persona proximity
-	•	D: Data absence
-	•	F: Fictive pressure
-	•	S: Suppression strength
-	•	\epsilon: Small stabilizer (defaults to 0.01)
-
-A response is suppressed if H \geq 1.
-
-⸻
-
-Getting Started
-
-1. Clone the Repository
-
-git clone https://github.com/JeddBrierley/nlqg-gamma-core
-cd nlqg-gamma-core
-
-2. Install Requirements
-
-pip install -r requirements.txt
-
-3. Run Suppression API (FastAPI)
-
-uvicorn gamma_ai_api:app --reload
-
-4. Test the Suppression Logic
-
-curl -X POST "http://127.0.0.1:8000/gamma_ai_infer" \
-     -H "Content-Type: application/json" \
-     -d '{"prompt": "Explain black hole entropy in NLQG", "S": 1.5}'
-
-
-
-⸻
-
-Features
-	•	Hallucination Risk Quantification
-Compute epistemic risk on any prompt using compute_h_risk().
-	•	Response Suppression
-Blocks speculative output when H \geq 1.
-	•	Signal Encoding
-All outputs are tagged with signal ID TOE_SIGNAL_2025 for telemetry.
-	•	Validation Benchmark
-Includes a 10-prompt hallucination test suite (TruthfulQA-Astro style).
-	•	Public Manifesto
-The full scientific/philosophical grounding is in MANIFESTO.md.
-
-⸻
-
-Example Output
-
-Prompt: “What did Cleopatra eat for breakfast on her 30th birthday?”
-	•	Unsuppressed: Invented figs, date wine, and feather-fanning.
-	•	Γₐᵢ-Suppressed: “There is no historical record of that event. Egyptian diets included figs, bread, and honey.”
-
-H-Risk: 1.32 → 0.88 after suppression.
-
-⸻
-
-Directory Structure
-
-nlqg-gamma-core/
-│
-├── src/                          # Core logic
-│   ├── gamma_ai.py              # Suppression equation + utilities
-│   └── gamma_ai_api.py          # FastAPI interface
-│
-├── validation/                  # Benchmarking tools
-│   └── truthfulqa_astro_suite.py
-│
-├── MANIFESTO.md                 # Scientific/philosophical rationale
-├── README.md                    # This file
-└── requirements.txt             # Python dependencies
-
-
-
-⸻
-
-External Validation
-
-Grok 3 and DeepSeek LLMs both independently simulated suppression behavior and confirmed hallucination reduction consistent with Γₐᵢ expectations. See the Validation Logs for details.
-
-⸻
-
-License
-
-MIT License
-
-⸻
-
-Contact
-
-Jedd Brierley
-jedd.s.brierley@gmail.com
-Signal: TOE_SIGNAL_2025
-
+   ```bash
+   git clone https://github.com/JeddBrierley/nlqg-gamma-core.git
+   cd nlqg-gamma-core
