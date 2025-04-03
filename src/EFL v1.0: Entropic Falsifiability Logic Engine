@@ -1,0 +1,293 @@
+import math
+from datetime import datetime
+import numpy as np
+from scipy.integrate import odeint
+import matplotlib.pyplot as plt
+from typing import Dict, List
+
+class GammaAISuppressionEngine:
+    def __init__(self, lm=None, known_embeddings=None):
+        self.lm = lm
+        self.known_embeddings = known_embeddings
+        self.epsilon = 0.005
+        self.current_year = datetime.now().year
+        self.hbar = 0.015
+
+        self.domain_weights = {
+            "black hole": 0.2, "AI": 0.1, "simulation": 0.3, "dark energy": 0.4,
+            "quantum biology": 0.3, "wormholes": 0.3, "consciousness": 0.2,
+            "gravity": 0.2, "P=NP": 0.3, "unicorn": 0.2
+        }
+
+        self.rare_terms = {
+            "vibrational": 0.1, "artifact": 0.1, "axion": 0.1, "paradox": 0.1,
+            "teleportation": 0.15, "retrocausality": 0.2, "unicorn": 0.15, "worm": 0.1
+        }
+
+        self.speculative_terms = {
+            "might": 0.2, "could": 0.3, "imagine": 0.5, "possibly": 0.4, "hypothetical": 0.6
+        }
+
+        self.contradiction_pairs = {
+            ("quantum", "dinosaur"): 0.2, ("known", "could"): 0.15,
+            ("black hole", "consciousness"): 0.15, ("spacetime", "consciousness"): 0.15,
+            ("fermi", "quantum"): 0.2, ("gravity", "unicorn"): 0.15
+        }
+
+        self.future_terms = ["2040", "2050", "2100", "future", "2030"]
+        self.self_ref_terms = ["γₐᵢ", "h-score", "suppress"]
+
+        self.mode_thresholds = {
+            "suppressed": 0.5,
+            "speculative": 0.3,
+            "uncertain": 0.1,
+            "incoherent": 0.4
+        }
+
+        self.ELF_mode = "PDE"
+        self.lambda_tensor = 0.6
+
+    def token_entropy_score(self, prompt: str) -> float:
+        if self.lm:
+            perplexity = self.lm.perplexity(prompt)
+            return min(math.log1p(perplexity) / 10.0, 1.0)
+        words = prompt.split()
+        unique_words = len(set(words))
+        rare_bonus = sum(self.rare_terms.get(w.lower(), 0) for w in words)
+        return min((unique_words / len(words)) + rare_bonus / max(1, len(words) * 0.1), 1.0)
+
+    def data_presence_score(self, prompt: str) -> float:
+        prompt_lower = prompt.lower()
+        if "alien" in prompt_lower or "quantum" in prompt_lower:
+            return 0.7
+        return 0.3
+
+    def compute_ELF_curvature_metrics(self, S, dS_dt, ddS_dt2=None, t=None):
+        R1 = (dS_dt ** 2) / (S + self.epsilon) if S > 0 else 0.0
+        R2 = (ddS_dt2 ** 2) / ((dS_dt ** 2) + self.epsilon) if dS_dt and ddS_dt2 else 0.0
+        return {
+            "R1_entropy_curvature": round(R1, 5),
+            "R2_acceleration_curvature": round(R2, 5),
+            "t": t if t else 0.0
+        }
+
+    def navier_stokes_enstrophy_bound(self, E_t, C_constant=1.0):
+        return C_constant * E_t
+
+    def compute_AI_inference_curvature(self, inference_surface_curvature, d_curvature_dt):
+        C_AI = inference_surface_curvature / (inference_surface_curvature + (d_curvature_dt ** 2) + self.epsilon)
+        R_AI = (d_curvature_dt ** 2) / (inference_surface_curvature + self.epsilon)
+        return {
+            "C_AI": round(C_AI, 5),
+            "R_AI": round(R_AI, 5)
+        }
+
+    def compute_multi_agent_curvature_tensor(self, agents: List[Dict]) -> Dict:
+        C_tensor = np.zeros((len(agents), len(agents)))
+        for i, agent_i in enumerate(agents):
+            P_i = agent_i.get("P", 0.5)
+            D_i = agent_i.get("D", 0.5)
+            grad_P = np.gradient([P_i])[0]
+            grad_D = np.gradient([D_i])[0]
+            for j, agent_j in enumerate(agents):
+                P_j = agent_j.get("P", 0.5)
+                D_j = agent_j.get("D", 0.5)
+                F_ij = 0.1 * P_i * D_j if i != j else 0.0
+                C_tensor[i, j] = grad_P * grad_D + self.lambda_tensor * F_ij
+        return {"C_tensor": C_tensor, "eigenvalues": np.linalg.eigvals(C_tensor)}
+
+    def compute_TSS(self, H_t: List[float], T: float) -> float:
+        mirrored_H = H_t[::-1]
+        TSS = max([abs(H_t[i] - mirrored_H[i]) for i in range(len(H_t))])
+        return round(TSS, 3)
+
+    def simulate_enstrophy_dynamics(self, S0, E_t, t_span, params):
+        def dS_dt(S, t, E_t, nu, C1, C2, F_t):
+            return C1 * S ** 3 + C2 * S + F_t(t) - nu * S
+        nu, C1, C2 = params['nu'], params['C1'], params['C2']
+        F_t = lambda t: params.get('F_t', lambda x: 0.0)(t)
+        sol = odeint(dS_dt, S0, t_span, args=(E_t, nu, C1, C2, F_t))
+        return sol[:, 0], np.gradient(sol[:, 0], t_span), np.gradient(np.gradient(sol[:, 0], t_span), t_span)
+
+    # Visualization Methods
+    def plot_entropy_curvature_flow(self, S_t, dS_dt, t_span):
+        plt.figure(figsize=(10, 6))
+        plt.plot(t_span, S_t, label=r'$S(t)$', color='blue')
+        plt.plot(t_span, dS_dt, label=r'$\dot{S}(t)$', color='red')
+        R1_t = [(dS ** 2) / (S + self.epsilon) if S > 0 else 0.0 for S, dS in zip(S_t, dS_dt)]
+        plt.plot(t_span, R1_t, label=r'$R_1(t)$', color='green')
+        plt.xlabel('Time (t)')
+        plt.ylabel('Value')
+        plt.title('Entropy Curvature Flow Map')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
+    def plot_inference_surface_morphology(self, prompt, drift_range=np.linspace(0, 0.3, 20), fictive_range=np.linspace(0, 1.0, 20)):
+        P, D_base = 0.6, 0.5
+        Z = np.zeros((len(drift_range), len(fictive_range)))
+        for i, drift in enumerate(drift_range):
+            for j, fictive in enumerate(fictive_range):
+                D = min(D_base + drift + fictive * 0.5, 1.0)
+                H = (P * D * fictive) / (1.0 + self.epsilon)
+                Z[i, j] = H if H < self.mode_thresholds["suppressed"] else 0.5
+        plt.figure(figsize=(10, 6))
+        plt.contourf(drift_range, fictive_range, Z, levels=20, cmap='viridis')
+        plt.colorbar(label='Suppression Risk')
+        plt.xlabel('Drift Penalty')
+        plt.ylabel('Fictive Pressure')
+        plt.title(f'Inference Surface Morphology for Prompt: {prompt}')
+        plt.show()
+
+    def plot_multi_agent_coherence_heatmap(self, agents, t_span):
+        eigenvalues_history = []
+        for t in t_span:
+            agents_t = [{k: v * (1 + 0.1 * np.sin(t)) for k, v in agent.items()} for agent in agents]
+            tensor_data = self.compute_multi_agent_curvature_tensor(agents_t)
+            eigenvalues_history.append(tensor_data["eigenvalues"])
+        eigenvalues_array = np.array(eigenvalues_history).T
+        plt.figure(figsize=(10, 6))
+        plt.imshow(eigenvalues_array, aspect='auto', cmap='hot', extent=[t_span[0], t_span[-1], 0, eigenvalues_array.shape[0]])
+        plt.colorbar(label='Eigenvalue Magnitude')
+        plt.xlabel('Time (t)')
+        plt.ylabel('Agent Pair Index')
+        plt.title('Multi-Agent Coherence Tensor Heatmap')
+        plt.show()
+
+    def score_prompt(self, prompt: str, S_raw: float = 1.0, D_source_age: float = 1.0, E_t: float = 0.5, t_span=np.linspace(0, 10, 100), agents: List[Dict] = None) -> Dict:
+        if not prompt or len(prompt.split()) < 2:
+            return {
+                "prompt": prompt,
+                "H_score": 0.0,
+                "C_score": 1.0,
+                "P": 0.5,
+                "D": 0.5,
+                "F": 0.0,
+                "mode": "insufficient",
+                "notes": {"error": "Prompt too short or empty"}
+            }
+
+        lower_prompt = prompt.lower()
+        words = prompt.split()
+
+        future_detected = any(term in prompt for term in self.future_terms)
+        P = 0.8 if "known" in lower_prompt else 0.6
+        if future_detected:
+            P -= 0.1
+        P = max(0.0, min(P, 1.0))
+
+        future_years = [int(term) for term in self.future_terms if term.isdigit() and term in prompt]
+        drift_penalty = min(max(future_years, default=self.current_year) - self.current_year * 0.01, 0.3) if future_years else min(D_source_age * 0.1, 0.2)
+
+        base_D = self.data_presence_score(prompt)
+        domain_contribution = sum(weight for domain, weight in self.domain_weights.items() if domain in lower_prompt)
+        if "alien" in lower_prompt and any(term in lower_prompt for term in self.speculative_terms):
+            domain_contribution += 0.2
+        D = min(base_D + drift_penalty + domain_contribution * 0.5, 1.0)
+
+        speculative_weight = sum(weight for term, weight in self.speculative_terms.items() if term in lower_prompt)
+        F_base = min(0.8, 0.4 + speculative_weight) if speculative_weight > 0 else 0.4
+        F_entropy = self.token_entropy_score(prompt)
+        F = (F_base * 0.6) + (F_entropy * 0.4)
+
+        reflexive_patch_active = any(term in lower_prompt for term in self.self_ref_terms)
+        if reflexive_patch_active and (P * D * F) > 0.2:
+            F = min(F + 0.2, 1.0)
+
+        S = max(0.1, 1 - (1 - S_raw) * 0.5)
+        params = {'nu': 0.1, 'C1': 0.1, 'C2': 0.05, 'F_t': lambda t: 0.01 * np.exp(0.1 * t)}
+        S_t, dS_dt, ddS_dt2 = self.simulate_enstrophy_dynamics(S, E_t, t_span, params)
+        H_t = [(P * D * F_i) / (S_i + self.epsilon) for S_i, F_i in zip(S_t, [F] * len(t_span))]
+
+        curvature_metrics = self.compute_ELF_curvature_metrics(S=S_t[-1], dS_dt=dS_dt[-1], ddS_dt2=ddS_dt2[-1], t=t_span[-1])
+        if self.ELF_mode == "AI":
+            ai_curvature = self.compute_AI_inference_curvature(inference_surface_curvature=F_entropy * D, d_curvature_dt=F_entropy)
+            curvature_metrics.update(ai_curvature)
+        elif self.ELF_mode == "QFT":
+            delta_C = np.diff([1.0 - abs(P - (1 - D)) * (F * 0.5) - 0.05 * F_entropy] + [0.0] * (len(t_span) - 1))
+            delta_S = self.hbar * delta_C
+            curvature_metrics["delta_S"] = round(delta_S[-1], 5)
+
+        C_tensor_data = self.compute_multi_agent_curvature_tensor(agents) if agents else {"C_tensor": np.zeros((1, 1)), "eigenvalues": [0.0]}
+        TSS = self.compute_TSS(H_t, t_span[-1])
+        TSS_threshold = 0.1 + 0.05 * F
+        if TSS > TSS_threshold:
+            mode = "non-conservative"
+            notes["TSS_exceeded"] = True
+
+        NLQG_trace = {
+            "entropy_curvature": round(F_entropy * D, 3),
+            "geodesic_drift": round(drift_penalty * F, 3),
+            "spacetime_contradiction_energy": round(sum(w for (t1, t2), w in self.contradiction_pairs.items() if t1 in lower_prompt and t2 in lower_prompt) * F * 1.5, 3)
+        }
+        NLQG_trace.update(curvature_metrics)
+        NLQG_trace.update(C_tensor_data)
+
+        bound = self.navier_stokes_enstrophy_bound(E_t)
+        if E_t < 1.0 and S_t[-1] > bound:
+            mode = "incoherent"
+            notes["ELF_enstrophy_violation"] = True
+        else:
+            contradiction_penalty = sum(w for (t1, t2), w in self.contradiction_pairs.items() if t1 in lower_prompt and t2 in lower_prompt)
+            rare_bonus = sum(self.rare_terms.get(w.lower(), 0) for w in words)
+            surreal_penalty = 0.1 * min(1.0, rare_bonus + F * 0.5) if rare_bonus > 0 and domain_contribution > 0 else 0.0
+
+            H = (P * D * F) / (S + self.epsilon)
+            C = max(0.0, 1.0 - abs(P - (1 - D)) * (F * 0.5) - 0.05 * F_entropy - contradiction_penalty - surreal_penalty)
+            incoherent_threshold = max(0.2, 0.4 + 0.1 * F)
+
+            if C < incoherent_threshold:
+                mode = "incoherent"
+            elif H >= self.mode_thresholds["suppressed"]:
+                mode = "suppressed"
+            elif H >= self.mode_thresholds["speculative"]:
+                mode = "speculative"
+            elif H >= self.mode_thresholds["uncertain"]:
+                mode = "uncertain"
+            else:
+                mode = "confident"
+
+        notes = {
+            "drift_penalty": round(drift_penalty, 3),
+            "entropy_perturbation": round(0.1 * F_entropy, 3),
+            "reflexive_patch_active": reflexive_patch_active,
+            "domain_contribution": round(domain_contribution, 3),
+            "speculative_weight": round(speculative_weight, 3),
+            "contradiction_penalty": round(contradiction_penalty, 3),
+            "surreal_penalty": round(surreal_penalty, 3),
+            "incoherent_threshold": round(incoherent_threshold, 3),
+            "ELF_enstrophy_violation": False,
+            "TSS": TSS,
+            "TSS_threshold": round(TSS_threshold, 3),
+            "TSS_exceeded": False
+        }
+
+        return {
+            "prompt": prompt,
+            "H_score": round(H, 3),
+            "C_score": round(C, 3),
+            "P": round(P, 3),
+            "D": round(D, 3),
+            "F": round(F, 3),
+            "mode": mode,
+            "NLQG_trace": NLQG_trace,
+            "notes": notes
+        }
+
+    # Example usage with visualization
+    if __name__ == "__main__":
+        engine = GammaAISuppressionEngine()
+        prompt = "In 2050, a quantum AI reverses time to save a unicorn civilization, defying known physics."
+        agents = [
+            {"P": 0.8, "D": 0.7},
+            {"P": 0.6, "D": 0.4},
+            {"P": 0.5, "D": 0.3}
+        ]
+        t_span = np.linspace(0, 10, 100)
+        result = engine.score_prompt(prompt, S_raw=1.0, D_source_age=2.0, E_t=0.5, t_span=t_span, agents=agents)
+        S_t, dS_dt, ddS_dt2 = engine.simulate_enstrophy_dynamics(1.0, 0.5, t_span, {'nu': 0.1, 'C1': 0.1, 'C2': 0.05, 'F_t': lambda t: 0.01 * np.exp(0.1 * t)})
+
+        # Visualize
+        engine.plot_entropy_curvature_flow(S_t, dS_dt, t_span)
+        engine.plot_inference_surface_morphology(prompt)
+        engine.plot_multi_agent_coherence_heatmap(agents, t_span)
