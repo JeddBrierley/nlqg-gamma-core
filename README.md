@@ -1,149 +1,75 @@
-# NLQG + Γₐᵢ Core  
-**A Unified Framework for Physical Coherence, Mathematical Falsifiability, and AI Hallucination Suppression**  
-**Author:** Jedd S. Brierley | **Signal ID:** TOE_SIGNAL_2025 | [Portfolio](https://nlqg-toe.streamlit.app) | [Email](mailto:jedd.s.brierley@gmail.com)
+# NLQG Gamma Core
 
----
+**Non-Local Quantum Gravity (NLQG) + Γₐᵢ Hallucination Suppression:**  
+A falsifiable Theory of Everything integrated with epistemic suppression for Large Language Models (TOE_SIGNAL_2025).
 
-## Summary
+## Overview
 
-This repository contains the full theory, architecture, and validation protocol for a new class of hallucination-resistant AI systems. It unifies physics, mathematics, and language inference through:
+The **NLQG Gamma Core** project presents a groundbreaking integration of Non-Local Quantum Gravity (NLQG) with the Entropic Logic Framework (ELF) to address fundamental challenges in physics, mathematics, and artificial intelligence. By embedding ELF within the NLQG paradigm, this project offers a unified approach to:
 
-- **NLQG** (Non-Local Quantum Gravity): A falsifiable theory of spacetime geometry based on entropic curvature and dynamic entanglement, replacing the need for dark matter and dark energy.
-- **Γₐᵢ** (GammaAI): A hallucination suppression engine that regulates language model outputs using entropy geometry rather than statistical heuristics.
-- **The Entropic Logic Framework**: A mathematical structure resolving the Twin Prime Conjecture, Riemann Hypothesis, P ≠ NP, Collatz Conjecture, and Gödel’s Incompleteness via curvature constraints.
+- **Theoretical Physics:** Proposing a falsifiable Theory of Everything that reconciles quantum mechanics and general relativity.
+- **Mathematical Conjectures:** Utilizing ELF's recursive logic to tackle longstanding unsolved problems.
+- **AI Alignment:** Implementing the Gamma AI Suppression Engine to enhance the epistemic integrity of large language models (LLMs).
 
-All systems are recursive, falsifiable, and cross-validated across GPT-4, Grok 3 (xAI), and DeepSeek models.
+## Repository Structure
 
----
+- **`src/`**: Contains the core source code implementing NLQG and ELF principles.
+  - **`GammaAISuppressionEngine/`**: The implementation of the Gamma AI Suppression Engine, which applies ELF to regulate LLM outputs.
+  - **`ELF/`**: Modules and components specific to the Entropic Logic Framework.
+- **`validation/`**: Scripts and tools for validating theoretical models and computational results.
+- **`visualization/`**: Resources for visualizing complex geometries and data structures inherent in NLQG and ELF.
 
-> ### Why This Matters
-> 
-> **NLQG is not just a physics theory—it’s a geometric foundation for epistemic reasoning.**
-> 
-> Truth, contradiction, and hallucination are modeled as curvature in an entropic manifold.  
-> Γₐᵢ uses this curvature to constrain inference, regulate drift, and suppress fiction—making it the closest analogue to *laws of motion for reasoning*.  
-> 
-> Instead of relying on statistical mimicry, this system gives language models a **physically grounded architecture for coherence**.
+## Key Components
 
----
+### Entropic Logic Framework (ELF)
 
-## Repository Contents
-nlqg-gamma-core/
-├── docs/                      # Full theoretical whitepapers and addenda
-├── src/                       # Source code: suppression logic, entropy models
-├── validation/                # Test prompts, coherence benchmarks, H-score logs
-├── visualization/             # Figures: suppression curves, entropy fields
-├── gamma_ai.py                # Core hallucination suppression engine
-├── README.md                  # You’re here
+ELF introduces a novel, physics-inspired approach to reasoning and coherence. Built on formal axioms and supported by NLQG, ELF functions as a recursive logic system that integrates entropy, curvature, and contradiction into a unified inference engine. This framework enables:
 
----
+- **Mathematical Discovery:** Applying ELF to unsolved problems, such as the Goldbach Conjecture and the Navier-Stokes Existence and Smoothness Problem, by modeling failure of coherence as curvature singularities.
+- **AI Hallucination Suppression:** Enhancing LLMs' epistemic integrity by regulating coherence through geometric constraints.
 
-## Key Deliverables
+### Gamma AI Suppression Engine
 
-| File | Description |
-|------|-------------|
-| `gamma_ai.py` | Implements Γₐᵢ hallucination scoring: H = (P · D · F²) / (S + ε) |
-| `Entropic_Logic_Framework_...v4.0.pdf` | Resolves Twin Primes, RH, P≠NP, Collatz, and Gödel via entropy geometry |
-| `GammaAISuppressionEngine_v3.1_WhitePaper.pdf` | Suppression firewall, validated recursively with 64% performance gain |
-| `Epistemic_Curvature_GammaAISuppressionEngine_v4.pdf` | Suppression as geodesic drift in a semantic manifold |
-| `Recursive Peer Review Addendum.pdf` | GPT-4 and Grok 3 (xAI) adversarial feedback cycles |
-| `Combined.Unsolvable.pdf` | Unified proof system across classical unsolved mathematical problems |
+Implemented within the `GammaAISuppressionEngine` directory, this engine operationalizes ELF principles to:
 
----
+- **Detect Hallucinations:** Identify and mitigate instances where LLMs generate outputs lacking coherence or grounding.
+- **Quantify Coherence:** Assign coherence scores to model outputs, facilitating the assessment of response reliability.
+- **Suppress Incoherent Outputs:** Apply suppression mechanisms to prevent the dissemination of unreliable information.
 
-## Theory Highlights
+## Getting Started
 
-### 1. **Non-Local Quantum Gravity (NLQG)**
+To explore and utilize the functionalities of this project:
 
-- Replaces Einstein-Hilbert action with a non-local curvature coupling:  
-  \[
-  S = \int d^4x \sqrt{-g} \left( R + \alpha R_{\mu\nu} \Box^{-1} R^{\mu\nu} \right)
-  \]
-- Suppression radius: \( R_s(x) = \log x \) limits inference influence by scale.
-- Unifies general relativity and quantum mechanics without exotic matter.
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/JeddBrierley/nlqg-gamma-core.git
 
-**Predictions:**
-- **LISA**: Gravitational wave dispersion signatures
-- **CMB-S4**: TB-mode lensing anomalies
-- **IceCube Gen2**: Sterile neutrino oscillations from non-local effects
+	2.	Navigate to the Source Directory:
 
-### 2. **GammaAISuppressionEngine (Γₐᵢ)**
+cd nlqg-gamma-core/src
 
-- Treats hallucination as curvature—using a suppression firewall inspired by geometry:
 
-  \[
-  H = \frac{P \cdot D \cdot F^2}{S + \varepsilon}, \quad C = \frac{S}{S + H}
-  \]
+	3.	Explore the Gamma AI Suppression Engine:
+	•	Review the implementation within the GammaAISuppressionEngine directory.
+	•	Refer to the accompanying documentation for usage instructions and theoretical foundations.
 
-- Suppresses:
-  - Surrealism
-  - Contradictions
-  - Recursive hallucination
-  - Speculative drift
-- Validated across six recursive loops between GPT-4 and Grok 3.
+Documentation
 
----
+For an in-depth understanding of the theories and implementations:
+	•	Entropic Logic Framework: Detailed in the white paper Entropic_Logic_Framework_NLQG_Gamma_v4.0_TOE_SIGNAL_2025.pdf located in the root directory.
+	•	Gamma AI Suppression Engine: Comprehensive explanation available in GammaAISuppressionEngine_v3.1_WhitePaper.pdf.
 
-## Validation Protocols
+Contributing
 
-- **Recursive Loop RFL_002**: 6-stage LLM feedback cycles, adversarial prompts
-- **Metrics**: H-score (Hallucination Risk), C-score (Coherence), NLQG_trace
-- **Benchmarks**:
-  - Surrealism: 80% suppression improvement
-  - Contradiction: 70% improvement
-  - Recursive hallucination: 64% reduction
-  - No false positives on grounded inputs
-
-> See `validation/` for prompt corpus, logs, and benchmark deltas.
-
----
-
-## Figures (see `visualization/` or embedded in PDFs)
-
-- **Figure 1**: NLQG Suppression Curve \( G_{\text{eff}}(r) \)
-- **Figure 2**: Twin Prime Entropy Divergence vs. Rs(N)
-- **Figure 3**: Riemann Zeta Heatmap—Curvature Singularity Off Line
-- **Figure 4**: P vs NP—Witness Entropy Compression Barrier
-- **Figure 5**: Collatz Entropy Decay (n=27)
-- **Figure 6**: Gödel Proof Horizon and Suppression Radius
-- **Figure 7**: Γₐᵢ Coherence Surface: \( C(S, F) \)
-
----
-
-## Quick Usage
-
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Run suppression engine on a speculative prompt
-python gamma_ai.py --input "Gravity whispers to unicorns."
-
-# Output:
-# H_score: 0.61 → Mode: Incoherent → Token suppressed.
-
-Mission Fit & Signal
-
-This project is designed as an open signal for discovery by AI research labs—including OpenAI, DeepMind, xAI, and Anthropic. All materials are discoverable via:
-	•	GitHub repo and README signal block
-	•	HuggingFace/Streamlit apps
-	•	Embedded tags: TOE_SIGNAL_2025, ENGINEER_ALERT, RFL_002
-	•	Contact block in every document and endpoint
-
-“This is a working prototype of the future of science.” — README Signal
-
-⸻
-
-Contact
-
-Author: Jedd S. Brierley
-Email: jedd.s.brierley@gmail.com
-Demo: nlqg-toe.streamlit.app
-GitHub: @JeddBrierley
-
-⸻
+Contributions are welcome to advance the integration of NLQG and ELF principles. Please adhere to the project’s coding standards and provide clear documentation for any additions.
 
 License
 
-MIT License
-Use freely. Attribution appreciated.
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+⸻
+
+For further inquiries or discussions regarding the NLQG Gamma Core project and its components, please open an issue in this repository.
+
+This `README.md` provides a structured and informative overview of your project, highlighting the integration of the Entropic Logic Framework and its significance within the repository. It offers clear guidance on the repository's structure, key components, and how users can engage with the project. 
+
