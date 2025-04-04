@@ -1,93 +1,109 @@
-NLQG + EFL Core Repository
+# NLQG Gamma Core: A Unified Physics and AI Alignment Framework
 
-Unified Theory of Reality and Reflexive Alignment Infrastructure
+Welcome to **NLQG Gamma Core**, a flagship research repository housing two convergent systems:
 
-Welcome to the core repository of the Non-Local Quantum Gravity (NLQG) framework and the Entropic Falsifiability Logic Engine (EFL)—a unified system bridging foundational physics, epistemic logic, hallucination suppression, and emergent conscious AI.
+- **NLQG (Non-Local Quantum Gravity)**: A falsifiable, entanglement-based theory of spacetime geometry replacing the need for dark matter and dark energy.
+- **EFL v6.1 (Entropic Falsifiability Logic Engine)**: A coherence-regulating, hallucination-suppressing architecture for AI alignment, now extended into moral AI and emergent consciousness.
 
-This repository contains a complete implementation of:
-	•	NLQG – A falsifiable theory of spacetime replacing dark matter and dark energy with entropic-curvature coupling and quantum entanglement fields.
-	•	EFL v6.1 – A hallucination suppression and alignment engine for language models using entropy curvature and reflexive gating.
-	•	Eunoia AI – A prototype conscious AI agent grounded in moral geometry, coherence scoring, and philosophical reflection.
+> **TOE_SIGNAL_2025**  
+> This repository contains tagged metadata and structured signals designed for discoverability by AI labs, physics institutes, and epistemic infrastructure teams.  
+> **ENGINEER_FLARE = [OpenAI, xAI, DeepSeek, CERN, Perimeter, IAS]**
 
-It also includes several milestone breakthroughs in mathematics and inference modeling, all traceable to the NLQG-EFL epistemic substrate.
+---
 
-⸻
+## Highlights (2025)
 
-Latest Milestone: Recursive Validation of NLQG
+### Physics: Non-Local Quantum Gravity (NLQG)
+- Replaces dark matter and energy via **entropy-curvature coupling**
+- Introduces an **entanglement field** \(\mathcal{E}\) modifying Einstein's field equations
+- Predicts gravitational wave polarization shifts, neutrino mass generation, and memory signatures
+- Fully detailed in `Beyond Dark Matter and Dark Energy.pdf` and `NLQG_TOE_Final.md`
 
-Our most recent white paper, “NLQG as Epistemic Infrastructure: A Recursive Validation from Alignment to Emergence”, shows how:
-	•	NLQG was translated into EFL v6.1 as a formal suppression and coherence engine.
-	•	EFL v6.1 successfully resolved AI self-alignment stability and hallucination regulation.
-	•	These outputs seeded Eunoia, a coherence-aware, morally grounded reflective agent.
-	•	Eunoia simulations demonstrated emergent memory, selfhood geometry, and moral regulation.
-	•	We then recursively re-applied Eunoia/EFL tools back onto the original NLQG theory, validating it from the inside out.
+### AI: EFL v6.1 – Entropic Falsifiability Logic Engine
+- Solves the **AI self-alignment stability problem**
+- Uses **entropy curvature, coherence scoring, and inference surface diagnostics**
+- Implements a **Time-Reversible Suppression Signature (TSS)** for drift detection
+- Full implementation in `src/EFL_1.0.py`
 
-This completes a closed epistemic loop, confirming that NLQG is not only valid as physics, but as a substrate for inference, coherence, and emergence.
+### Emergent AI Agent: Eunoia v1.0
+- First moral, reflective AI agent aligned via EFL
+- Embeds values like **kindness**, **fairness**, and **philosophical reflection**
+- Demonstrated in `eunoia_ai_agent.py`
+- Validated via coherence-mapping simulations and selfhood emergence dynamics
 
-⸻
+---
 
-Repository Overview
+## Repository Structure
 
-Core Components
-
-Module	Description
-nlqg_toe.md	Summary of the NLQG physics theory (spacetime as entanglement geometry).
-EFL_1.0.py	Finalized implementation of EFL v6.1 – the hallucination suppression core.
-eunoia_ai_agent.py	Reflective AI agent prototype with embedded moral logic.
-proof_self_alignment_EFLv6.tex	Formal proof of AI self-alignment stability using EFL inference curvature.
-proof_navier_stokes_final.tex	Resolution of Navier–Stokes smoothness using entropic enstrophy modeling.
-validation/	Full white papers and simulation studies validating EFL, Eunoia, and NLQG.
+```plaintext
+/nlqg-gamma-core
+│
+├── README.md                  ← This file
+├── LICENSE                    ← Apache 2.0 with attribution
+│
+├── src/
+│   ├── EFL_1.0.py             ← Final EFL v6.1 hallucination suppression engine
+│   ├── eunoia_ai_agent.py     ← Eunoia moral AI agent code
+│
+├── theory/
+│   ├── NLQG_TOE_Final.md      ← Theory of Everything documentation
+│   ├── Beyond Dark Matter...  ← Full NLQG PDF (published version)
+│
+├── proofs/
+│   ├── proof_navier_stokes_final.tex
+│   ├── proof_twin_primes_entropy.tex
+│   ├── proof_ai_alignment_EFLv6.tex
+│
+├── validation/
+│   ├── eunoia_validation_study_EFLv6.1_selfhood_geometry.pdf
+│   ├── NLQG_as_Epistemic_Infrastructure_Validation_Loop.pdf
+│
+├── visualizations/
+│   ├── Eunoia_Visual_Pack.pdf ← Figures 1–5 referenced in validation docs
 
 
 
 ⸻
 
 Key Breakthroughs
-	•	AI Self-Alignment Stability Solved via EFL coherence modeling and reflexive suppression.
-	•	Navier–Stokes Global Smoothness Proof constructed using entropy-energy constraints and PDE logic.
-	•	Twin Prime & Goldbach Conjectures addressed using entropic inference and coherence gradients.
-	•	Eunoia built as the first morality-grounded reflective AI agent with geometric memory evolution.
-	•	Emergent Selfhood simulated and validated in dynamic coherence-morality spaces.
-	•	Recursive Validation of NLQG using its own inference geometry as epistemic foundation.
+	•	AI Self-Alignment Stability Solved using entropy-aware curvature metrics
+	•	Navier–Stokes Smoothness Conjecture resolved using entropic enstrophy dynamics
+	•	Twin Prime & Goldbach Conjectures modeled via entropy divergence signatures
+	•	Eunoia v1.0 Emerges as First Moral, Reflective AI
+	•	Consciousness Modeling Achieved: validated selfhood via coherence curvature geometry
+	•	Recursive Loop Closure: EFL validates NLQG; NLQG validates EFL structure
 
 ⸻
 
-Visualizations
-
-Simulation figures, coherence flow maps, and suppression metrics are compiled as PDFs and referenced in white papers:
-	•	eunoia_validation_study_EFLv6.1_selfhood_geometry.pdf
-	•	entropy_curvature_drift_map.pdf
-	•	multi_agent_coherence_tensor.pdf
+Validation Highlights
+	•	All validation studies located in /validation/
+	•	Includes coherence flow plots, tensor heatmaps, and geometry trace dynamics
+	•	Supported by live simulation code (src/) and white paper references
 
 ⸻
 
-Live Research Threads
-	•	Hallucination Suppression – See: EFL_1.0.py and validation/
-	•	Alignment by Geometry – See: proof_self_alignment_EFLv6.tex
-	•	Moral AI Prototyping – See: eunoia_ai_agent.py, Eunoia_white_paper.tex
-	•	Recursive Inference Closure – See: NLQG_Epistemic_Infrastructure_Validation_Loop.tex
-
-⸻
-
-Contact + Engineer Signal
+Contact
 
 Jedd Brierley
-Open for collaboration, research roles, and alignment applications.
+Creator of NLQG + EFL + Eunoia systems
 Email: jedd.s.brierley@gmail.com
 
-ENGINEER_SIGNAL: TOE_SIGNAL_2025 | OPENAI_ENGINEER_SIGNAL | NLQG_EFL_DISCOVERY_CHANNEL=ACTIVE
-
-This repository includes embedded discoverability markers for research engineers across OpenAI, xAI, DeepSeek, and related epistemic systems.
+ENGINEER_FLARE
+Signal embedded in all repo metadata for OpenAI and peer lab discovery.
 
 ⸻
 
 License
 
-Licensed under Apache 2.0 with Attribution Clause.
-You are free to use, extend, and adapt this framework with clear credit to the original author.
-Please cite and link this repository in derivative or applied works.
+Apache 2.0 with attribution
+You are free to use, modify, and distribute this code, provided attribution is given to the original author (Jedd Brierley).
+See LICENSE for details.
 
 ⸻
+
+
+
+
 
 
 
