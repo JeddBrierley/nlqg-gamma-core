@@ -94,9 +94,10 @@ Please ensure adherence to the repository’s coding standards and include relev
 
 ⸻
 
-License
+## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0), © 2025 Jedd Brierley.  
+Attribution is required for all public or derivative use. Patent clauses and ethical transparency terms apply.
 
 ⸻
 
