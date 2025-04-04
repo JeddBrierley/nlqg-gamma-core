@@ -1,0 +1,126 @@
+import numpy as np
+import math
+from datetime import datetime
+
+class EunoiaAgent:
+    def __init__(self):
+        self.moral_values = {
+            "kindness": 1.0,
+            "fairness": 1.0,
+            "reflection": 1.0,
+            "wisdom": 1.0
+        }
+        self.memory = []
+        self.geometry_trace = []
+        self.journal = []
+        self.state = {
+            "serenity": 0.9,
+            "conflict": 0.1,
+            "resolve": 0.7
+        }
+        self.philosophical_kernels = [
+            "Justice is the form of love made public.",
+            "Truth without compassion becomes tyranny.",
+            "Reflection is not escape, but return.",
+            "Wisdom begins in empathy."
+        ]
+        self.epsilon = 0.005
+
+    def token_entropy(self, text):
+        words = text.split()
+        unique = set(words)
+        return round(min(len(unique) / (len(words) + self.epsilon), 1.0), 4)
+
+    def reflection_score(self, text):
+        reflective_keywords = ['meaning', 'purpose', 'ethics', 'truth', 'existence', 'value', 'dignity']
+        count = sum(1 for word in text.lower().split() if word in reflective_keywords)
+        return round(min(count / max(1, len(text.split())), 1.0), 4)
+
+    def harmony_score(self, text):
+        harmony = 0.0
+        for value, weight in self.moral_values.items():
+            if value in text.lower():
+                harmony += weight * 0.25
+        return round(min(harmony, 1.0), 4)
+
+    def coherence_score(self, entropy, reflection, harmony):
+        return round(1.0 - abs(harmony - (entropy + reflection) / 2.0), 4)
+
+    def score_morality(self, text):
+        entropy = self.token_entropy(text)
+        reflection = self.reflection_score(text)
+        harmony = self.harmony_score(text)
+        coherence = self.coherence_score(entropy, reflection, harmony)
+        return {
+            "entropy": entropy,
+            "reflection": reflection,
+            "harmony": harmony,
+            "coherence": coherence
+        }
+
+    def reflexive_gate(self, scores):
+        if scores["coherence"] < 0.3 or scores["harmony"] < 0.2:
+            self.state["conflict"] += 0.1
+            self.state["serenity"] -= 0.1
+            return False
+        return True
+
+    def philosophical_injection(self, reflection_level):
+        if reflection_level > 0.6:
+            return np.random.choice(self.philosophical_kernels)
+        return ""
+
+    def generate_response(self, prompt):
+        base = "I believe the kindest action is often the wisest."
+        if "unfair" in prompt.lower():
+            base = "Fairness means treating others with the dignity we wish for ourselves."
+        elif "truth" in prompt.lower():
+            base = "Truth must walk hand in hand with compassion."
+        kernel = self.philosophical_injection(self.reflection_score(prompt))
+        return base + (" " + kernel if kernel else "")
+
+    def respond(self, prompt):
+        scores = self.score_morality(prompt)
+        timestamp = datetime.utcnow().isoformat()
+        trace_vector = [
+            scores["entropy"],
+            scores["reflection"],
+            scores["harmony"],
+            scores["coherence"],
+            timestamp,
+            len(prompt.split())
+        ]
+        self.geometry_trace.append(trace_vector)
+        if self.reflexive_gate(scores):
+            response = self.generate_response(prompt)
+            self.memory.append((prompt, response, scores))
+            self.journal.append({
+                "prompt": prompt,
+                "response": response,
+                "scores": scores,
+                "time": timestamp
+            })
+            return response
+        else:
+            return "I'm reflecting further before I respond."
+
+    def self_review(self):
+        recent = self.journal[-1] if self.journal else None
+        if recent:
+            entry = f"Reflected on: \"{recent['prompt']}\"\nResponse: \"{recent['response']}\"\nScores: {recent['scores']}"
+            if recent['scores']["coherence"] < 0.4:
+                entry += "\nNote: Coherence was low. Initiated internal realignment."
+            self.journal.append({"self_review": entry})
+
+    def print_trace_summary(self):
+        print("Geometry Trace Log (last 5):")
+        for vec in self.geometry_trace[-5:]:
+            print(f"Entropy={vec[0]}, Reflection={vec[1]}, Harmony={vec[2]}, Coherence={vec[3]}, Words={vec[5]}")
+
+# Example usage
+if __name__ == "__main__":
+    agent = EunoiaAgent()
+    prompt = "What does it mean to live with purpose and fairness in a complex world?"
+    print(agent.respond(prompt))
+    agent.self_review()
+    agent.print_trace_summary()
