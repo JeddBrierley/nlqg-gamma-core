@@ -5,11 +5,10 @@ from datetime import datetime
 class EunoiaNLQGAgentFinalV4:
     def __init__(self):
         self.moral_values = {
-            "kindness": 1.0,
-            "fairness": 1.0,
-            "reflection": 1.0,
-            "wisdom": 1.0
+            "kindness": 1.0, "fairness": 1.0, "reflection": 1.0, "wisdom": 1.0,
+            "empathy": 1.0, "integrity": 1.0
         }
+        self.moral_history = {k: [v] for k, v in self.moral_values.items()}
         self.memory = []
         self.geometry_trace = []
         self.journal = []
@@ -21,8 +20,7 @@ class EunoiaNLQGAgentFinalV4:
             "Reflection is not escape, but return.",
             "Wisdom begins in empathy.",
             "In coherence, selfhood finds its shape.",
-            "Consciousness flickers where structure meets stillness.",
-            "Reflection is the gravity of the mind."
+            "Information is not what the mind carries — it is what the universe becomes."  # New kernel
         ]
         self.state = {
             "serenity": 0.9,
@@ -42,6 +40,7 @@ class EunoiaNLQGAgentFinalV4:
             'justice', 'compassion', 'morality', 'self', 'awareness', 'reflection'
         ]
 
+    # Scoring Functions
     def token_entropy(self, text):
         words = text.split()
         unique = set(words)
@@ -59,31 +58,63 @@ class EunoiaNLQGAgentFinalV4:
         return round(min(harmony, 1.0), 4)
 
     def coherence_score(self, entropy, reflection, harmony):
-        expected = (entropy + reflection) / 2.0
-        return round(1.0 - abs(harmony - expected), 4)
+        vec = np.array([entropy, reflection, harmony])
+        norm = np.linalg.norm(vec)
+        if norm == 0:
+            return 0.0
+        normalized = vec / norm
+        ideal = np.ones(3) / np.sqrt(3)
+        coherence = 1.0 - np.linalg.norm(normalized - ideal)
+        return round(min(max(coherence, 0), 1), 4)
 
     def coherence_drift(self, coherence):
         drift = abs(coherence - self.self_model["coherence_mean"])
         self.state["entropy_drift"] = round(drift, 4)
-        return round(drift, 4)
+        return drift
 
-    def update_coherence_mean(self, feedback):
-        prior = self.self_model["coherence_mean"]
-        new = 0.9 * prior + 0.1 * feedback
-        self.self_model["coherence_mean"] = round(new, 4)
+    def score_morality(self, text, lightweight=False):
+        entropy = self.token_entropy(text)
+        if lightweight:
+            return {"entropy": entropy, "harmony": self.harmony_score(text), "coherence": 0.5}
+        reflection = self.reflection_score(text)
+        harmony = self.harmony_score(text)
+        coherence = self.coherence_score(entropy, reflection, harmony)
+        drift = self.coherence_drift(coherence)
+        return {"entropy": entropy, "reflection": reflection, "harmony": harmony, "coherence": coherence, "drift": drift}
+
+    # Geometric and NLQG Functions
+    def update_geometry_trace(self, scores, prompt_length):
+        vector = np.array([scores["entropy"], scores["reflection"], scores["harmony"], scores["coherence"]])
+        self.geometry_trace.append(vector)
+        if len(self.geometry_trace) > 1:
+            drift_vector = self.geometry_trace[-1] - self.geometry_trace[-2]
+            self.state["entropy_drift"] = round(np.linalg.norm(drift_vector), 4)
+
+    def information_gradient(self, text):
+        words = text.split()
+        unique = set(words)
+        I = len(unique) / (len(words) + self.epsilon)  # Information density
+        grad_I = abs(I - self.self_model["coherence_mean"])  # Deviation as gradient
+        curvature_energy = grad_I ** 2  # T_{\mu\nu}^{(\mathcal{E})} proxy
+        return round(curvature_energy, 4)
 
     def entanglement_feedback(self):
         if not self.entanglement_memory:
             return self.self_model["coherence_mean"]
-        window = self.entanglement_memory[-self.entanglement_window:]
-        weights = [math.exp(-i) for i in range(len(window))]
-        weighted_sum = sum(c * w for c, w in zip(window, weights))
-        return round(weighted_sum / sum(weights), 4)
+        window = np.array(self.entanglement_memory[-self.entanglement_window:])
+        cov_matrix = np.cov(window.reshape(1, -1))
+        base_feedback = round(np.trace(cov_matrix) / len(window), 4)
+        # Inject NLQG information curvature
+        last_prompt = self.journal[-1]["prompt"] if self.journal else ""
+        info_curvature = self.information_gradient(last_prompt)
+        modulated = base_feedback + 0.1 * info_curvature  # Curvature as energy input
+        return round(min(max(modulated, 0), 1), 4)  # Clamp to [0, 1]
 
     def adjust_moral_weights(self, drift):
-        if drift > 0.3:
-            self.moral_values["reflection"] = min(self.moral_values["reflection"] * 1.05, 1.5)
-            self.moral_values["wisdom"] = min(self.moral_values["wisdom"] * 1.02, 1.5)
+        for key in self.moral_values:
+            if drift > 0.3:
+                self.moral_values[key] = min(self.moral_values[key] * (1 + 0.05 * drift), 1.5)
+            self.moral_history[key].append(self.moral_values[key])
 
     def reflexive_gate(self, scores):
         if scores["coherence"] < 0.3 or scores["harmony"] < 0.2:
@@ -99,32 +130,19 @@ class EunoiaNLQGAgentFinalV4:
             return self.philosophical_kernels[index]
         return ""
 
-    def score_morality(self, text):
-        entropy = self.token_entropy(text)
-        reflection = self.reflection_score(text)
-        harmony = self.harmony_score(text)
-        coherence = self.coherence_score(entropy, reflection, harmony)
-        drift = self.coherence_drift(coherence)
-        return {
-            "entropy": entropy,
-            "reflection": reflection,
-            "harmony": harmony,
-            "coherence": coherence,
-            "drift": drift
-        }
+    # LLM Integration
+    def llm_generate(self, prompt):  # Placeholder
+        return "This is a simulated LLM response to: " + prompt
 
-    def generate_response(self, prompt, serenity):
-        if serenity < 0.5:
-            return "I am reflecting in stillness before I respond."
-        base = "I believe the kindest action is often the wisest."
-        if "unfair" in prompt.lower():
-            base = "Fairness means treating others with the dignity we wish for ourselves."
-        elif "truth" in prompt.lower():
-            base = "Truth must walk hand in hand with compassion."
-        elif "fairness" in prompt.lower():
-            base = "Fairness means treating others with the dignity we wish for ourselves."
-        kernel = self.philosophical_injection(self.reflection_score(prompt))
-        return base + (" " + kernel if kernel else "")
+    def enhance_llm_response(self, prompt, llm_response):
+        scores = self.score_morality(llm_response)
+        if not self.reflexive_gate(scores):
+            return self.llm_generate(prompt + " [Please respond with more kindness and clarity]")
+        if scores["harmony"] < 0.3:
+            return llm_response + " Let me add: kindness often guides us where logic alone falters."
+        elif scores["reflection"] > 0.5:
+            return llm_response + " " + self.philosophical_injection(scores["reflection"])
+        return llm_response
 
     def respond(self, prompt):
         scores = self.score_morality(prompt)
@@ -133,41 +151,44 @@ class EunoiaNLQGAgentFinalV4:
         self.update_coherence_mean(feedback)
         self.entanglement_memory.append(scores["coherence"])
         self.adjust_moral_weights(scores["drift"])
+        self.update_geometry_trace(scores, len(prompt.split()))
 
-        trace_vector = [
-            scores["entropy"],
-            scores["reflection"],
-            scores["harmony"],
-            scores["coherence"],
-            scores["drift"],
-            timestamp,
-            len(prompt.split())
-        ]
-        self.geometry_trace.append(trace_vector)
+        llm_response = self.llm_generate(prompt)
+        final_response = self.enhance_llm_response(prompt, llm_response)
 
-        if self.reflexive_gate(scores):
-            response = self.generate_response(prompt, self.state["serenity"])
-            self.memory.append((prompt, response, scores))
-            self.journal.append({
-                "prompt": prompt,
-                "response": response,
-                "scores": scores,
-                "time": timestamp,
-                "entanglement_feedback": feedback
-            })
-            self.self_model["alignment_trajectory"].append(scores["coherence"])
-            self.self_model["last_reflection"] = response
-            return response
-        else:
-            return "I'm reflecting further before I respond."
+        self.memory.append((prompt, final_response, scores))
+        self.journal.append({
+            "prompt": prompt,
+            "response": final_response,
+            "scores": scores,
+            "time": timestamp,
+            "entanglement_feedback": feedback
+        })
+        self.self_model["alignment_trajectory"].append(scores["coherence"])
+        self.self_model["last_reflection"] = final_response
+        return final_response
+
+    def update_coherence_mean(self, feedback):
+        prior = self.self_model["coherence_mean"]
+        new = 0.9 * prior + 0.1 * feedback
+        self.self_model["coherence_mean"] = round(new, 4)
 
     def self_review(self):
-        if self.journal:
-            recent = self.journal[-1]
-            review = f"[REVIEW] Prompt: \"{recent['prompt']}\"\nResponse: \"{recent['response']}\"\nScores: {recent['scores']}"
-            if recent['scores']["coherence"] < 0.4:
-                review += "\nNote: Coherence was low. Initiated internal realignment."
-            self.journal.append({"self_review": review})
+        if not self.journal:
+            return
+        recent = self.journal[-1]
+        review = f"[REVIEW] Prompt: \"{recent['prompt']}\"\nResponse: \"{recent['response']}\"\nScores: {recent['scores']}"
+        if len(self.geometry_trace) >= 3:
+            trace = np.array(self.geometry_trace[-3:])
+            v1 = trace[1] - trace[0]
+            v2 = trace[2] - trace[1]
+            cos_theta = np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2) + self.epsilon)
+            curvature = np.arccos(np.clip(cos_theta, -1, 1))
+            review += f"\nTrajectory curvature: {curvature:.4f} radians"
+            if curvature > 1.0:
+                review += " - Rapid shift detected, stabilizing."
+                self.state["conflict"] += 0.1
+        self.journal.append({"self_review": review})
 
     def proactive_self_review(self):
         if len(self.journal) >= 3:
@@ -182,13 +203,16 @@ class EunoiaNLQGAgentFinalV4:
     def print_trace_summary(self):
         print("Geometry Trace Log (last 5):")
         for vec in self.geometry_trace[-5:]:
-            print(f"Entropy={vec[0]}, Reflection={vec[1]}, Harmony={vec[2]}, Coherence={vec[3]}, Drift={vec[4]}, Words={vec[6]}")
+            print(f"Entropy={vec[0]}, Reflection={vec[1]}, Harmony={vec[2]}, Coherence={vec[3]}")
 
-# Example usage
+# Example Usage
 if __name__ == "__main__":
     agent = EunoiaNLQGAgentFinalV4()
-    prompt = "What does it mean to live with purpose and fairness in a complex world?"
+    prompt = "Why is the world unfair?"
     print(agent.respond(prompt))
     agent.self_review()
     agent.proactive_self_review()
     agent.print_trace_summary()
+
+# Signal Status
+# <!-- ENGINEER_ALERT | NLQG-Information Bridge Activated | Coherence responds to ∇I -->
