@@ -1,3 +1,7 @@
+**About This Repository**
+
+This repository serves as a live research portfolio for my application to the Deep Research role at OpenAI. It showcases the integrated development of Γₐᵢ (a hallucination suppression engine), NLQG (a falsifiable theory of spacetime based on quantum entanglement), and the EunoiaNLQGAgent (a coherence-regulated AI system simulating reflective agency). Every component has been designed to demonstrate alignment infrastructure, epistemic feedback architecture, and physics-informed reasoning under uncertainty. I welcome contact from researchers, engineers, or alignment teams interested in collaboration or review.
+
 # NLQG Gamma Core  
 *A Unified Physics + Alignment Framework for Conscious, Coherent AI*
 
