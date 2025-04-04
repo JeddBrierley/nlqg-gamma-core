@@ -1,3 +1,5 @@
+If you're visiting or cloning the repo, feel free to [say hello or leave a thought here](https://github.com/JeddBrierley/nlqg-gamma-core/discussions).
+
 # NLQG Gamma Core: A Unified Physics and AI Alignment Framework
 
 Welcome to **NLQG Gamma Core**, a flagship research repository housing two convergent systems:
