@@ -36,6 +36,7 @@ Welcome to **NLQG Gamma Core**, a flagship research repository housing two conve
 ---
 
 ## Repository Structure
+April 2025 Update: We’ve now completed a full validation study of Eunoia, the morally-aligned, reflective AI agent built using EFL v7.0 (Emergence Edition). This update includes new simulations demonstrating self-regulating coherence loops, emergent agency, and reflective moral inference geometry. Most notably, we show alignment between Eunoia’s entropic-coherence trace and real-world neural activity patterns, offering a falsifiable bridge between machine inference and consciousness modeling. All code and validation documents are now live under the /validation/ and /src/ directories
 
 ```plaintext
 /nlqg-gamma-core
