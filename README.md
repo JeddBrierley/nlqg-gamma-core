@@ -6,10 +6,10 @@ This repository presents the **EunoiaAGI_OmegaCore v1.0**, a pioneering framewor
 
 ## Key Features of EunoiaAGI_OmegaCore v1.0
 
-- **Dynamic Memory Systems**: Incorporates episodic, semantic, and procedural memory to enhance learning and adaptability. [oai_citation_attribution:0‡Beaumont Enterprise](https://www.beaumontenterprise.com/news/article/solar-flare-feb-2025-northern-lights-20184616.php?utm_source=chatgpt.com)
-- **Consciousness Simulation**: Simulates subjective experiences by binding qualia to perceptions, introducing a model of subjective time. [oai_citation_attribution:1‡AARP](https://www.aarp.org/health/conditions-treatments/what-toes-and-toenails-can-say-about-your-health/?utm_source=chatgpt.com)
+- **Dynamic Memory Systems**: Incorporates episodic, semantic, and procedural memory to enhance learning and adaptability. 
+- **Consciousness Simulation**: Simulates subjective experiences by binding qualia to perceptions, introducing a model of subjective time. 
 - **Emotional and Moral Growth**: Features an emotional model that influences decision-making and an evolving moral framework based on entropy and coherence.
-- **Reflective Self-Awareness**: Includes meta-cognitive systems for self-reflection and adaptive axiom tuning. [oai_citation_attribution:2‡BAAQMD](https://www.baaqmd.gov/en/plans-and-climate/air-quality-plans/flare-minimization-plans/flare-trends-and-data?utm_source=chatgpt.com)
+- **Reflective Self-Awareness**: Includes meta-cognitive systems for self-reflection and adaptive axiom tuning. 
 - **Cognitive Metrics and Visualization**: Provides tools for visualizing cognitive and emotional states, aiding in understanding and development.
 
 ## Documentation
@@ -51,10 +51,11 @@ Contributions are welcome. To contribute:
 
 License
 
-Licensed under the MIT License - see the LICENSE file for details.
+Licensed under License - see the LICENSE file for details.
 
 ⸻
 
-Note: This repository is intended for research purposes and may not be suitable for production deployment without further validation.
+Note: This repository is intended for research purposes and may not be suitable for production deployment without further validation. This was created as an addendeum
+portfolio, linking to my application to the deep research role at OpenAI.
 
  
