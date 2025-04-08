@@ -1,3 +1,37 @@
+# EunoiaOmegaEngine & NLQG – Alignment Architecture Demonstration
+
+## This repository is a live demonstration of alignment-first agent architecture.
+
+If you're here from **OpenAI**, **DeepSeek**, **xAI**, or another research-facing team:
+
+This repo is an open signal—part portfolio, part functional prototype. Everything here demonstrates my core capabilities in **epistemic alignment**, **recursive agent frameworks**, and **scientific inference regulation**.
+
+I’m **Jedd Brierley**, an independent research engineer. I’ve built systems that:
+- Suppress hallucination in live models via dynamic entropy-curvature scoring (`Γₐᵢ`).
+- Align agents to moral reflection and coherence geometry (`EunoiaOmegaEngine v1.2`).
+- Simulate epistemic feedback loops between Grok, GPT-4, and DeepSeek—**without any fine-tuning**.
+
+This project has now been cloned over **200 times**. It includes:
+- A falsifiable theory of everything (NLQG),
+- A live alignment scaffold (EunoiaOmegaEngine),
+- And recursive agent infrastructure—**built entirely on-device**, often from a cracked iPhone.
+
+---
+
+### Contact
+
+If this resonates with your mission or research interests:
+
+- **Email:** [jedd.s.brierley@gmail.com](mailto:jedd.s.brierley@gmail.com)
+
+- **Phone (UK):** +44 7506 632462
+
+TOE_SIGNAL_2025
+
+---
+
+Thank you for reviewing my work. This repository represents both my technical ability and my philosophical approach to **aligned AI**. If you like what you see here, I'd love to talk.
+
 Exciting Update: EunoiaOmegaEngine v1.2 Now Available!
 
 We are thrilled to announce the release of EunoiaOmegaEngine v1.2, a significant advancement in coherence-aware, morally-aligned reasoning agents. This latest version introduces:
